@@ -4,6 +4,7 @@ import AppBar from "./components/AppBar";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Graph from  "./components/Graph/Graph";
+import CreateGraph from "./components/CreateGraph/CreateGraph";
 
 //EXAMPLE GRAPH DATA
 const nodes = [
@@ -30,6 +31,7 @@ function App() {
         <Route path="Login" element={<Login />} />
         <Route path="Signup" element={<Signup />} />
         <Route path="Graph" element={<Graph nodes={nodes} edges={edges} />} />
+        <Route path="Create" element={<CreateGraph />} />
       </Routes>
     </BrowserRouter>
   );

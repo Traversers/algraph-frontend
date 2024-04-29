@@ -1,10 +1,7 @@
 import React from 'react';
 import Node from './Node';
 import Edge from './Edge';
-
-const ListItem = ({ items, renderItem }) => {
-  return items.map((item, index) => renderItem(item, index));
-};
+import List from './common/List';
 
 const Graph = ({ nodes, edges }) => {
   const renderNode = (node, index) => (
@@ -27,8 +24,8 @@ const Graph = ({ nodes, edges }) => {
 
   return (
     <>
-      <ListItem items={nodes} renderItem={renderNode} />
-      <ListItem items={edges} renderItem={renderEdge} />
+      <List items={nodes} renderItem={renderNode} />
+      <List items={edges} renderItem={renderEdge} />
     </>
   );
 };

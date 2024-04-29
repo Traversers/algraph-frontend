@@ -105,7 +105,7 @@ const CreateGraph = () => {
                 style={{
                     position: 'relative',
                     width: '70%',
-                    height: '80vh', // This will be dynamically calculated
+                    height: '80vh',
                     border: '1px solid black',
                     margin: '20px auto'
                 }}

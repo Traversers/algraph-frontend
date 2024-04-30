@@ -1,14 +1,15 @@
 import { TEXTS } from "../../constants/texts";
 import "./GraphPreview.css";
-import { Layout } from "antd";
+import { Card } from "antd";
 
 const GraphPreview = ({key}) => {
     return (
         <div className="graph-preview" >
-            <div className="graph-preview__header">
-            <h2>{TEXTS.GRAPH_PREVIEW}</h2>
-            </div>
+           <Card title={TEXTS.GRAPH_PREVIEW} bordered={true} style={{ width: 200,
+        height:200,  backgroundColor:"lightpink"}}> graph need to be dispalyed here</Card>
+        
         </div>
+    
     );
-}
+};
 export default GraphPreview;

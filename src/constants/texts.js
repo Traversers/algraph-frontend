@@ -1,3 +1,3 @@
 export const TEXTS={
-    GRAPH_PREVIEW : "actuall text"
+    GRAPH_PREVIEW : "Directed Graph",
 }

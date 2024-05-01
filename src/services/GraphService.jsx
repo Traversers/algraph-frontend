@@ -13,4 +13,4 @@ const createGraph= async (graphData,user) => {
  const getPreviewGraph = async (id) => {
     
  }
- 
+ export default {createGraph,getGraph,setGraph,deleteGraph,getPreviewGraph};

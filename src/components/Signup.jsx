@@ -1,114 +1,227 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Link as RouterLink } from 'react-router-dom';
-
-
-export default function Signup() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+import React, { useState } from 'react';
+import {
+  AutoComplete,
+  Button,
+  Cascader,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+} from 'antd';
+const { Option } = Select;
+const residences = [
+  {
+    value: 'zhejiang',
+    label: 'Zhejiang',
+    children: [
+      {
+        value: 'hangzhou',
+        label: 'Hangzhou',
+        children: [
+          {
+            value: 'xihu',
+            label: 'West Lake',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: 'Jiangsu',
+    children: [
+      {
+        value: 'nanjing',
+        label: 'Nanjing',
+        children: [
+          {
+            value: 'zhonghuamen',
+            label: 'Zhong Hua Men',
+          },
+        ],
+      },
+    ],
+  },
+];
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+const Signup = () => {
+  const [form] = Form.useForm();
+  const onFinish = (values) => {
+    console.log('Received values of form: ', values);
   };
-
-  return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <RouterLink to="../Login">
-                  {"Already have an account? Log in"}
-                </RouterLink >
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select
+        style={{
+          width: 70,
+        }}
+      >
+        <Option value="86">+86</Option>
+        <Option value="87">+87</Option>
+      </Select>
+    </Form.Item>
   );
-}
+  const suffixSelector = (
+    <Form.Item name="suffix" noStyle>
+      <Select
+        style={{
+          width: 70,
+        }}
+      >
+        <Option value="USD">$</Option>
+        <Option value="CNY">¥</Option>
+      </Select>
+    </Form.Item>
+  );
+  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
+  const onWebsiteChange = (value) => {
+    if (!value) {
+      setAutoCompleteResult([]);
+    } else {
+      setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`));
+    }
+  };
+  const websiteOptions = autoCompleteResult.map((website) => ({
+    label: website,
+    value: website,
+  }));
+  return (
+    <Form
+      {...formItemLayout}
+      form={form}
+      name="register"
+      onFinish={onFinish}
+      initialValues={{
+        residence: ['zhejiang', 'hangzhou', 'xihu'],
+        prefix: '86',
+      }}
+      style={{
+        maxWidth: 600,
+      }}
+      scrollToFirstError
+    >
+      <Form.Item
+        name="email"
+        label="E-mail"
+        rules={[
+          {
+            type: 'email',
+            message: 'The input is not valid E-mail!',
+          },
+          {
+            required: true,
+            message: 'Please input your E-mail!',
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="password"
+        label="Password"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your password!',
+          },
+        ]}
+        hasFeedback
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        name="confirm"
+        label="Confirm Password"
+        dependencies={['password']}
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please confirm your password!',
+          },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('The new password that you entered do not match!'));
+            },
+          }),
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        name="Name"
+        label="Name"
+        tooltip="What do you want others to call you?"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your name!',
+            whitespace: true,
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="agreement"
+        valuePropName="checked"
+        rules={[
+          {
+            validator: (_, value) =>
+              value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
+          },
+        ]}
+        {...tailFormItemLayout}
+      >
+        <Checkbox>
+          I have read the <a href="">agreement</a>
+        </Checkbox>
+      </Form.Item>
+      <Form.Item {...tailFormItemLayout}>
+        <Button type="primary" htmlType="submit">
+          Register
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+};
+export default Signup;

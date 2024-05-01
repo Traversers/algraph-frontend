@@ -1,8 +1,16 @@
-import React from 'react';
+import { useState } from 'react';
+import { login } from '../services/user.service';
 import { Link as RouterLink } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async () => {
+    const response = await login(username, password);
+    console.log(`response`, response);
+  };
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
@@ -23,8 +31,13 @@ const Login = () => {
             message: 'Please input your Username!',
           },
         ]}
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Username"
+        />
       </Form.Item>
       <Form.Item
         name="password"
@@ -34,6 +47,8 @@ const Login = () => {
             message: 'Please input your Password!',
           },
         ]}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
       >
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
@@ -52,13 +67,18 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button">
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          onClick={handleSubmit}
+        >
           Log in
         </Button>
         <span>
-        <RouterLink to="../Signup">
-                  {"Already have an account? Log in"}
-                </RouterLink >
+          <RouterLink to="../Signup">
+            {'Already have an account? Log in'}
+          </RouterLink>
         </span>
       </Form.Item>
     </Form>

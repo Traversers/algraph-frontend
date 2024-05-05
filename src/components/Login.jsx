@@ -77,7 +77,7 @@ const Login = () => {
         </Button>
         <span>
           <RouterLink to="../Signup">
-            {'Already have an account? Log in'}
+            {'Don`t have an account? Register now!'}
           </RouterLink>
         </span>
       </Form.Item>

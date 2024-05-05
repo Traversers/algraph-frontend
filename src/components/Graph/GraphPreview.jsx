@@ -1,4 +1,4 @@
-import { TEXTS } from '../../constants/constants';
+import { texts } from '../../constants/constants';
 import './GraphPreview.css';
 import { Card } from 'antd';
 
@@ -6,7 +6,7 @@ const GraphPreview = ({ key }) => {
   return (
     <div className="graph-preview">
       <Card
-        title={TEXTS.GRAPH_PREVIEW}
+        title={texts.GRAPH_PREVIEW}
         bordered={true}
         style={{ width: 200, height: 200, backgroundColor: 'lightpink' }}
       >

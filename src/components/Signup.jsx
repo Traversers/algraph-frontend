@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
+import axios from 'axios';
+import { BACKEND_REGISTER_URL } from '../constants/constants';
+import Link from 'antd/es/typography/Link';
 
 const formItemLayout = {
   labelCol: {
@@ -33,7 +35,24 @@ const tailFormItemLayout = {
 };
 const Signup = () => {
   const [form] = Form.useForm();
-  const onFinish = (values) => {};
+
+  const onFinish = async (values) => {
+    const { name, email, password, confirm } = values;
+    if (password !== confirm) {
+      alert('Passwords do not match!');
+      return;
+    }
+    try {
+      const response = await axios.post(BACKEND_REGISTER_URL, {
+        name,
+        email,
+        password,
+      });
+      console.log(`response`, response);
+    } catch (error) {
+      console.log(`error`, error);
+    }
+  };
 
   return (
     <Form
@@ -51,8 +70,8 @@ const Signup = () => {
       scrollToFirstError
     >
       <Form.Item
-        name="Name"
-        label="Name"
+        name="name"
+        label="name"
         tooltip="What do you want others to call you?"
         rules={[
           {
@@ -119,28 +138,11 @@ const Signup = () => {
       >
         <Input.Password />
       </Form.Item>
-
-      <Form.Item
-        name="agreement"
-        valuePropName="checked"
-        rules={[
-          {
-            validator: (_, value) =>
-              value
-                ? Promise.resolve()
-                : Promise.reject(new Error('Should accept agreement')),
-          },
-        ]}
-        {...tailFormItemLayout}
-      >
-        <Checkbox>
-          I have read the <a href="">agreement</a>
-        </Checkbox>
-      </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">
           Register
         </Button>
+        <Link href="/Login">Already have an account? Log in!</Link>
       </Form.Item>
     </Form>
   );

@@ -11,4 +11,5 @@ export const texts = {
 export const BACKEND_URL = 'http://localhost:8000';
 export const BACKEND_AUTH_URL = 'http://localhost:8000/auth';
 export const BACKEND_LOGIN_URL = 'http://localhost:8000/auth/login';
+export const BACKEND_REGISTER_URL = 'http://localhost:8000/auth/register';
 export const TEST_BACKEND_URL = 'http://localhost:3000';

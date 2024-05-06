@@ -9,4 +9,6 @@ export const texts = {
   GRAPH_PREVIEW: 'Directed Graph',
 };
 export const BACKEND_URL = 'http://localhost:8000';
+export const BACKEND_AUTH_URL = 'http://localhost:8000/auth';
+export const BACKEND_LOGIN_URL = 'http://localhost:8000/auth/login';
 export const TEST_BACKEND_URL = 'http://localhost:3000';

@@ -3,13 +3,30 @@ import { login } from '../services/user.service';
 import { Link as RouterLink } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { HttpStatusCode } from 'axios';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-    const response = await login(username, password);
-    console.log(`response`, response);
+    try {
+      const response = await login(username, password);
+      console.log(`response`, response);
+    } catch (error) {
+      const errorStatus = error.response.status;
+      if (errorStatus === HttpStatusCode.NotFound) {
+        alert('user not found');
+      }
+      if (errorStatus === HttpStatusCode.Unauthorized) {
+        alert('user not found');
+      }
+      if (errorStatus === HttpStatusCode.BadRequest) {
+        alert('server error please try again later');
+      }
+      if (errorStatus === HttpStatusCode.UnprocessableEntity) {
+        alert('user not found');
+      }
+    }
   };
   const onFinish = (values) => {
     console.log('Received values of form: ', values);

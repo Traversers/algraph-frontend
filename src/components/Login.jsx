@@ -18,7 +18,7 @@ const Login = () => {
       alert('Login successful');
       setName('');
       setPassword('');
-      history.push('/StartPage');
+      window.location.href = '/StartPage';
     } catch (error) {
       console.log(`error`, error);
       const errorStatusCode = error.response?.status;

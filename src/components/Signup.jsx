@@ -97,6 +97,7 @@ const Signup = () => {
         password: '',
         confirmPassword: '',
       });
+      window.location.href = '/Login';
     } catch (error) {
       console.log(`error`, error);
       if (error.response?.status === HttpStatusCode.BadRequest) {

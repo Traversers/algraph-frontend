@@ -101,7 +101,7 @@ const Signup = () => {
     } catch (error) {
       console.log(`error`, error);
       if (error.response?.status === HttpStatusCode.BadRequest) {
-        alert('Please fill in all fields');
+        alert(error.response.data.message);
       } else if (error.response?.status === HttpStatusCode.Conflict) {
         alert('User already exists');
       } else {

@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Edge = ({ x1, y1, x2, y2 }) => {
+const Edge = ({ x1, y1, x2, y2, isSelected }) => {
   return (
     <svg
       style={
         {
           position: 'absolute',
-          zIndex: -1,
+          zIndex: isSelected ? 1 : -1,
           width: '100%',
           height: '100%'
         }
@@ -16,8 +16,8 @@ const Edge = ({ x1, y1, x2, y2 }) => {
         y1={y1 + 10}
         x2={x2 + 10}
         y2={y2 + 10}
-        stroke="blue"
-        strokeWidth="2"
+        stroke={isSelected ? 'red' : 'blue'}
+        strokeWidth={isSelected ? '3' : '2'}
       />
     </svg>
   );

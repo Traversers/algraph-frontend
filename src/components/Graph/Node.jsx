@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Node = ({ x, y }) => {
+const Node = ({ x, y, isSelected, onClick }) => {
   return (
     <div
       style={{
@@ -8,10 +8,12 @@ const Node = ({ x, y }) => {
         width: '20px',
         height: '20px',
         borderRadius: '50%',
-        backgroundColor: 'lightgreen',
+        backgroundColor: isSelected ? 'red' : 'lightgreen',
         left: `${x}px`,
-        top: `${y}px`
+        top: `${y}px`,
+        cursor: 'pointer'
       }}
+      onClick={onClick}
     ></div>
   );
 };

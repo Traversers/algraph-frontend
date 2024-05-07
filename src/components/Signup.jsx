@@ -1,7 +1,9 @@
 import { Button, Form, Input } from 'antd';
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { BACKEND_REGISTER_URL } from '../constants/constants';
 import Link from 'antd/es/typography/Link';
+import { useState } from 'react';
+import { redirect } from 'react-router-dom';
 
 const formItemLayout = {
   labelCol: {
@@ -34,32 +36,86 @@ const tailFormItemLayout = {
   },
 };
 const Signup = () => {
-  const [form] = Form.useForm();
+  const [signupFormData, setSignupFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  const onFinish = async (values) => {
-    const { name, email, password, confirm } = values;
-    if (password !== confirm) {
-      alert('Passwords do not match!');
-      return;
+  const handleNameChange = (e) => {
+    setSignupFormData({ ...signupFormData, name: e.target.value });
+  };
+
+  const handleEmailChange = (e) => {
+    setSignupFormData({ ...signupFormData, email: e.target.value });
+  };
+
+  const handlePasswordChange = (e) => {
+    setSignupFormData({ ...signupFormData, password: e.target.value });
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setSignupFormData({ ...signupFormData, confirmPassword: e.target.value });
+  };
+
+  const isFormDataValidCheck = () => {
+    const { name, email, password, confirmPassword } = signupFormData;
+    const isAllFieldsFilled = name && email && password && confirmPassword;
+    const isEmailValid = email.includes('@') && email.includes('.');
+    if (!isAllFieldsFilled) {
+      alert('Please fill in all fields');
+      return false;
     }
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return false;
+    }
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return false;
+    }
+    if (!isEmailValid) {
+      alert('Please enter a valid email address');
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isFormDataValidCheck()) return;
     try {
+      const { name, email, password } = signupFormData;
       const response = await axios.post(BACKEND_REGISTER_URL, {
         name,
         email,
         password,
       });
-      console.log(`response`, response);
+      if (response.status === HttpStatusCode.Created)
+        alert('Registration successful');
+      setSignupFormData({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+      redirect('Login');
     } catch (error) {
       console.log(`error`, error);
+      if (error.response?.status === HttpStatusCode.BadRequest) {
+        alert('Please fill in all fields');
+      } else if (error.response?.status === HttpStatusCode.Conflict) {
+        alert('User already exists');
+      } else {
+        alert('Server error occurred, please try again later');
+      }
     }
   };
 
   return (
     <Form
       {...formItemLayout}
-      form={form}
       name="register"
-      onFinish={onFinish}
       initialValues={{
         residence: ['zhejiang', 'hangzhou', 'xihu'],
         prefix: '86',
@@ -72,30 +128,16 @@ const Signup = () => {
       <Form.Item
         name="name"
         label="name"
-        tooltip="What do you want others to call you?"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your name!',
-            whitespace: true,
-          },
-        ]}
+        value={signupFormData.name}
+        onChange={handleNameChange}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="email"
         label="E-mail"
-        rules={[
-          {
-            type: 'email',
-            message: 'The input is not valid E-mail!',
-          },
-          {
-            required: true,
-            message: 'Please input your E-mail!',
-          },
-        ]}
+        value={signupFormData.email}
+        onChange={handleEmailChange}
       >
         <Input />
       </Form.Item>
@@ -103,13 +145,8 @@ const Signup = () => {
       <Form.Item
         name="password"
         label="Password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!',
-          },
-        ]}
-        hasFeedback
+        value={signupFormData.password}
+        onChange={handlePasswordChange}
       >
         <Input.Password />
       </Form.Item>
@@ -117,29 +154,13 @@ const Signup = () => {
       <Form.Item
         name="confirm"
         label="Confirm Password"
-        dependencies={['password']}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: 'Please confirm your password!',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                new Error('The new password that you entered do not match!')
-              );
-            },
-          }),
-        ]}
+        value={signupFormData.confirmPassword}
+        onChange={handleConfirmPasswordChange}
       >
         <Input.Password />
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
           Register
         </Button>
         <Link href="/Login">Already have an account? Log in!</Link>

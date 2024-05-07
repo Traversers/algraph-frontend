@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { login } from '../services/user.service';
+import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
+import { BACKEND_LOGIN_URL } from '../constants/constants';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import { HttpStatusCode } from 'axios';
@@ -10,18 +11,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      console.log(`name:`, name);
-      console.log(`password:`, password);
-      const response = await login(name, password);
-      console.log(`response`, response);
-      if (response.status === HttpStatusCode.Ok) {
-        console.log(`Login successful`);
-      } else {
-        console.log(`Login failed`);
-      }
+      const response = await axios.post(BACKEND_LOGIN_URL, { name, password });
+      const token = response.data.token;
+      localStorage.setItem('accessToken', token.accessToken);
+      localStorage.setItem('refreshToken', token.refreshToken);
+
       setName('');
       setPassword('');
     } catch (error) {
+      console.log(`error`, error);
       const errorStatusCode = error.response?.status;
       if (errorStatusCode === HttpStatusCode.BadRequest) {
         alert('Please fill in all fields');

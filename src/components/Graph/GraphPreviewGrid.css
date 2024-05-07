@@ -1,0 +1,16 @@
+.centered-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.graph-preview-grid-container {
+    margin-bottom: 16px;  
+    width: 90vw;
+   
+  }
+  
+  .graph-preview-grid-row {
+    margin-bottom: 16px;
+    justify-content: center;
+  }

@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 200px; 
+    width: 89%; 
     height: 200px; 
     background-color: #e91382;
     border-radius: 10px;
@@ -19,5 +19,8 @@
     width: 200px;
     height: 200px;
     background-color: rgb(252, 184, 247);
-    
+       
+}
+.card.title{
+    white-space: wrap;
 }

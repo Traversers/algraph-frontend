@@ -12,12 +12,13 @@ const Login = () => {
     try {
       e.preventDefault();
       const response = await axios.post(BACKEND_LOGIN_URL, { name, password });
-      const token = response.data.token;
+      const token = response.data;
       localStorage.setItem('accessToken', token.accessToken);
       localStorage.setItem('refreshToken', token.refreshToken);
-
+      alert('Login successful');
       setName('');
       setPassword('');
+      history.push('/StartPage');
     } catch (error) {
       console.log(`error`, error);
       const errorStatusCode = error.response?.status;

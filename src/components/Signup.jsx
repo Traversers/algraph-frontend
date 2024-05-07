@@ -3,8 +3,6 @@ import axios, { HttpStatusCode } from 'axios';
 import { BACKEND_REGISTER_URL } from '../constants/constants';
 import Link from 'antd/es/typography/Link';
 import { useState } from 'react';
-import { redirect } from 'react-router-dom';
-
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -99,7 +97,6 @@ const Signup = () => {
         password: '',
         confirmPassword: '',
       });
-      redirect('Login');
     } catch (error) {
       console.log(`error`, error);
       if (error.response?.status === HttpStatusCode.BadRequest) {

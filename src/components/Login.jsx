@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { BACKEND_LOGIN_URL } from '../constants/constants';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import { HttpStatusCode } from 'axios';
 const Login = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const handleSubmit = async (e) => {
@@ -18,7 +19,7 @@ const Login = () => {
       alert('Login successful');
       setName('');
       setPassword('');
-      window.location.href = '/StartPage';
+      navigate('/StartPage');
     } catch (error) {
       console.log(`error`, error);
       const errorStatusCode = error.response?.status;

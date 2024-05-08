@@ -3,6 +3,8 @@ import axios, { HttpStatusCode } from 'axios';
 import { BACKEND_REGISTER_URL } from '../constants/constants';
 import Link from 'antd/es/typography/Link';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { validate } from 'email-validator';
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -34,6 +36,7 @@ const tailFormItemLayout = {
   },
 };
 const Signup = () => {
+  const navigate = useNavigate();
   const [signupFormData, setSignupFormData] = useState({
     name: '',
     email: '',
@@ -41,26 +44,14 @@ const Signup = () => {
     confirmPassword: '',
   });
 
-  const handleNameChange = (e) => {
-    setSignupFormData({ ...signupFormData, name: e.target.value });
-  };
-
-  const handleEmailChange = (e) => {
-    setSignupFormData({ ...signupFormData, email: e.target.value });
-  };
-
-  const handlePasswordChange = (e) => {
-    setSignupFormData({ ...signupFormData, password: e.target.value });
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    setSignupFormData({ ...signupFormData, confirmPassword: e.target.value });
+  const handleInputChange = (fieldName, value) => {
+    setSignupFormData({ ...signupFormData, [fieldName]: value });
   };
 
   const isFormDataValidCheck = () => {
     const { name, email, password, confirmPassword } = signupFormData;
     const isAllFieldsFilled = name && email && password && confirmPassword;
-    const isEmailValid = email.includes('@') && email.includes('.');
+    const isEmailValid = validate(email);
     if (!isAllFieldsFilled) {
       alert('Please fill in all fields');
       return false;
@@ -97,7 +88,7 @@ const Signup = () => {
         password: '',
         confirmPassword: '',
       });
-      window.location.href = '/Login';
+      navigate('/Login');
     } catch (error) {
       console.log(`error`, error);
       if (error.response?.status === HttpStatusCode.BadRequest) {
@@ -127,7 +118,7 @@ const Signup = () => {
         name="name"
         label="name"
         value={signupFormData.name}
-        onChange={handleNameChange}
+        onChange={(e) => handleInputChange('name', e.target.value)}
       >
         <Input />
       </Form.Item>
@@ -135,7 +126,7 @@ const Signup = () => {
         name="email"
         label="E-mail"
         value={signupFormData.email}
-        onChange={handleEmailChange}
+        onChange={(e) => handleInputChange('email', e.target.value)}
       >
         <Input />
       </Form.Item>
@@ -144,7 +135,7 @@ const Signup = () => {
         name="password"
         label="Password"
         value={signupFormData.password}
-        onChange={handlePasswordChange}
+        onChange={(e) => handleInputChange('password', e.target.value)}
       >
         <Input.Password />
       </Form.Item>
@@ -153,7 +144,7 @@ const Signup = () => {
         name="confirm"
         label="Confirm Password"
         value={signupFormData.confirmPassword}
-        onChange={handleConfirmPasswordChange}
+        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
       >
         <Input.Password />
       </Form.Item>

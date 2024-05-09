@@ -13,3 +13,7 @@
 .card.title{
     white-space: wrap;
 }
+
+.ant-card .ant-card-head-title{
+    white-space: wrap;
+}

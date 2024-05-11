@@ -4,6 +4,8 @@ import AppBar from "./components/AppBar";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import CreateGraph from "./components/CreateGraph/CreateGraph";
+import GraphPreview from "./components/Graph/GraphPreview";
+import StartPage from "./components/StartPage";
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
         <Route path="Login" element={<Login />} />
         <Route path="Signup" element={<Signup />} />
         <Route path="Create" element={<CreateGraph />} />
+        <Route path="StartPage" element={<StartPage />} />
       </Routes>
     </BrowserRouter>
   );

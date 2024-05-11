@@ -1,114 +1,160 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Link as RouterLink } from 'react-router-dom';
+import { Button, Form, Input } from 'antd';
+import axios, { HttpStatusCode } from 'axios';
+import { BACKEND_REGISTER_URL } from '../constants/constants';
+import Link from 'antd/es/typography/Link';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { validate } from 'email-validator';
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+const Signup = () => {
+  const navigate = useNavigate();
+  const [signupFormData, setSignupFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
+  const handleInputChange = (fieldName, value) => {
+    setSignupFormData({ ...signupFormData, [fieldName]: value });
+  };
 
-export default function Signup() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const isFormDataValidCheck = () => {
+    const { name, email, password, confirmPassword } = signupFormData;
+    const isAllFieldsFilled = name && email && password && confirmPassword;
+    const isEmailValid = validate(email);
+    if (!isAllFieldsFilled) {
+      alert('Please fill in all fields');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return false;
+    }
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return false;
+    }
+    if (!isEmailValid) {
+      alert('Please enter a valid email address');
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isFormDataValidCheck()) return;
+    try {
+      const { name, email, password } = signupFormData;
+      const response = await axios.post(BACKEND_REGISTER_URL, {
+        name,
+        email,
+        password,
+      });
+      if (response.status === HttpStatusCode.Created)
+        alert('Registration successful');
+      setSignupFormData({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+      navigate('/Login');
+    } catch (error) {
+      console.log(`error`, error);
+      if (error.response?.status === HttpStatusCode.BadRequest) {
+        alert(error.response.data.message);
+      } else if (error.response?.status === HttpStatusCode.Conflict) {
+        alert('User already exists');
+      } else {
+        alert('Server error occurred, please try again later');
+      }
+    }
   };
 
   return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <RouterLink to="../Login">
-                  {"Already have an account? Log in"}
-                </RouterLink >
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
+    <Form
+      {...formItemLayout}
+      name="register"
+      initialValues={{
+        residence: ['zhejiang', 'hangzhou', 'xihu'],
+        prefix: '86',
+      }}
+      style={{
+        maxWidth: 600,
+      }}
+      scrollToFirstError
+    >
+      <Form.Item
+        name="name"
+        label="name"
+        value={signupFormData.name}
+        onChange={(e) => handleInputChange('name', e.target.value)}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="email"
+        label="E-mail"
+        value={signupFormData.email}
+        onChange={(e) => handleInputChange('email', e.target.value)}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="password"
+        label="Password"
+        value={signupFormData.password}
+        onChange={(e) => handleInputChange('password', e.target.value)}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        name="confirm"
+        label="Confirm Password"
+        value={signupFormData.confirmPassword}
+        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+      >
+        <Input.Password />
+      </Form.Item>
+      <Form.Item {...tailFormItemLayout}>
+        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+          Register
+        </Button>
+        <Link href="/Login">Already have an account? Log in!</Link>
+      </Form.Item>
+    </Form>
   );
-}
+};
+export default Signup;

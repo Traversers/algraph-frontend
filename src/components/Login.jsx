@@ -1,93 +1,77 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Link as RouterLink } from 'react-router-dom';
-
-export default function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+import { useState } from 'react';
+import axios from 'axios';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { BACKEND_LOGIN_URL } from '../constants/constants';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input } from 'antd';
+import { HttpStatusCode } from 'axios';
+const Login = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post(BACKEND_LOGIN_URL, { name, password });
+      const token = response.data;
+      localStorage.setItem('accessToken', token.accessToken);
+      localStorage.setItem('refreshToken', token.refreshToken);
+      alert('Login successful');
+      setName('');
+      setPassword('');
+      navigate('/StartPage');
+    } catch (error) {
+      console.log(`error`, error);
+      const errorStatusCode = error.response?.status;
+      if (errorStatusCode === HttpStatusCode.BadRequest) {
+        alert(error.response.data);
+      } else if (errorStatusCode === HttpStatusCode.Unauthorized) {
+        alert('user was not found or password is incorrect');
+      } else if (errorStatusCode === HttpStatusCode.InternalServerError) {
+        alert('server error occurred, please try again later');
+      }
+      alert(error.response.data);
+    }
   };
-
   return (
-   
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+    <Form name="normal_login" className="login-form">
+      <Form.Item
+        name="name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      >
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Username"
+        />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      >
+        <Input
+          prefix={<LockOutlined className="site-form-item-icon" />}
+          type="password"
+          placeholder="Password"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          onClick={handleSubmit}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Log in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Log In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <RouterLink to="../Signup">
-                  {"Don't have an account? Sign Up"}
-                </RouterLink >
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
+          Log in
+        </Button>
+        <span>
+          <RouterLink to="../Signup">
+            {'Don`t have an account? Register now!'}
+          </RouterLink>
+        </span>
+      </Form.Item>
+    </Form>
   );
-}
+};
+export default Login;

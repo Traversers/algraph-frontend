@@ -3,7 +3,7 @@ import { PlusCircleFilled, MinusCircleFilled, DeleteFilled } from '@ant-design/i
 import { Button, Flex, message } from 'antd';
 import Graph from '../Graph/Graph';
 import storageService from '../../services/storageService';
-import CONSTANTS from '../../CONSTANTS/CONSTANTS';
+import { texts } from '../../constants/constants';
 
 const CreateGraph = () => {
     const [nodes, setNodes] = useState([]);
@@ -16,16 +16,16 @@ const CreateGraph = () => {
         const storedNodes = storageService.getData('graphNodes');
         const storedEdges = storageService.getData('graphEdges');
 
-        if (storedNodes.length > 0 || storedEdges.length > 0) {
-            setNodes(storedNodes);
-            setEdges(storedEdges);
-        }
-    }, []);
+    if (storedNodes.length > 0 || storedEdges.length > 0) {
+      setNodes(storedNodes);
+      setEdges(storedEdges);
+    }
+  }, []);
 
-    useEffect(() => {
-        storageService.setData('graphNodes', nodes);
-        storageService.setData('graphEdges', edges);
-    }, [nodes, edges]);
+  useEffect(() => {
+    storageService.setData('graphNodes', nodes);
+    storageService.setData('graphEdges', edges);
+  }, [nodes, edges]);
 
     const handleNodeClick = (clickedNode) => {
         let updatedNodes;
@@ -84,23 +84,25 @@ const CreateGraph = () => {
         }
     };
 
-    const handleStartPlacingNode = () => {
-        setIsPlacingNode(true);
-    };
+  const handleStartPlacingNode = () => {
+    setIsPlacingNode(true);
+  };
 
     const handleNodePlacement = (event) => {
         if (!isPlacingNode) return;
         const boundingRect = event.target.getBoundingClientRect();
 
-        const mouseX = event.clientX - boundingRect.left;
-        const mouseY = event.clientY - boundingRect.top;
+    const mouseX = event.clientX - boundingRect.left;
+    const mouseY = event.clientY - boundingRect.top;
 
         const newNode = { x: mouseX, y: mouseY, isSelected: false, key: nodes.length + 1 };
 
-        const nodeExists = nodes.some(node => node.x === newNode.x && node.y === newNode.y);
+    const nodeExists = nodes.some(
+      (node) => node.x === newNode.x && node.y === newNode.y
+    );
 
         if (nodeExists) {
-            message.error(CONSTANTS.TEXTS.CREATE_GRAPH_ERRORS.NODE_EXISTS);
+            message.error(texts.NODE_EXISTS);
             return;
         }
 
@@ -119,7 +121,7 @@ const CreateGraph = () => {
         );
 
         if (edgeExists) {
-            message.error(CONSTANTS.TEXTS.CREATE_GRAPH_ERRORS.EDGE_EXISTS);
+            message.error(texts.EDGE_EXISTS);
             return;
         }
         if (sourceNodeId === targetNodeId) {
@@ -134,7 +136,7 @@ const CreateGraph = () => {
 
     const deleteNode = () => {
         if (!selectedNode) {
-            message.error(CONSTANTS.TEXTS.CREATE_GRAPH_ERRORS.NO_NODE_SELECTED);
+            message.error(texts.NO_NODE_SELECTED);
             return;
         }
 
@@ -145,7 +147,7 @@ const CreateGraph = () => {
 
     const deleteEdge = () => {
         if (!selectedEdge) {
-            message.error(CONSTANTS.TEXTS.CREATE_GRAPH_ERRORS.NO_EDGE_SELECTED);
+            message.error(texts.NO_EDGE_SELECTED);
             return;
         }
 

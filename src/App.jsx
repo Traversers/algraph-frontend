@@ -5,7 +5,6 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import CreateGraph from "./components/CreateGraph/CreateGraph";
 
-
 function App() {
   return (
     <BrowserRouter>

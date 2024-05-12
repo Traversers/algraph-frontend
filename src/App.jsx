@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppBar from "./components/AppBar";
+import Navbar from "./components/Navbar/Navbar";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import GraphPreview from "./components/Graph/GraphPreview";
@@ -14,6 +14,7 @@ function App() {
         <Route path="Login" element={<Login />} />
         <Route path="Signup" element={<Signup />} />
         <Route path="StartPage" element={<StartPage />} />
+        <Route path="navbar" element={<Navbar />} />
       </Routes>
     </BrowserRouter>
   );

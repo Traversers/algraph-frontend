@@ -38,7 +38,7 @@ const CreateGraph = () => {
                 </Flex>
             </Flex>
 
-            <div style={{ width: '500px', margin: '20px auto' }}>
+            <div className='create-graph-container'>
                 <Card bordered={false}>
                     <div
                         className="create-graph-preview"
@@ -52,7 +52,7 @@ const CreateGraph = () => {
             <Flex gap="L" align="center" vertical>
                 <Flex gap="small" wrap="wrap">
                     <Button type="primary" size="large">
-                        Create Graph
+                        {CREATE_GRAPH_BUTTONS_TEXTS.CREATE_GRAPH}
                     </Button>
                 </Flex>
             </Flex>

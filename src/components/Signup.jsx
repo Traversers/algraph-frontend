@@ -1,51 +1,10 @@
-import React, { useState } from 'react';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-} from 'antd';
-const { Option } = Select;
-const residences = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [
-      {
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [
-          {
-            value: 'xihu',
-            label: 'West Lake',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [
-      {
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [
-          {
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-          },
-        ],
-      },
-    ],
-  },
-];
+import { Button, Form, Input } from 'antd';
+import axios, { HttpStatusCode } from 'axios';
+import { BACKEND_REGISTER_URL } from '../constants/constants';
+import Link from 'antd/es/typography/Link';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { validate } from 'email-validator';
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -77,52 +36,75 @@ const tailFormItemLayout = {
   },
 };
 const Signup = () => {
-  const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const navigate = useNavigate();
+  const [signupFormData, setSignupFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleInputChange = (fieldName, value) => {
+    setSignupFormData({ ...signupFormData, [fieldName]: value });
   };
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    </Form.Item>
-  );
-  const suffixSelector = (
-    <Form.Item name="suffix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="USD">$</Option>
-        <Option value="CNY">¥</Option>
-      </Select>
-    </Form.Item>
-  );
-  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
-  const onWebsiteChange = (value) => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`));
+
+  const isFormDataValidCheck = () => {
+    const { name, email, password, confirmPassword } = signupFormData;
+    const isAllFieldsFilled = name && email && password && confirmPassword;
+    const isEmailValid = validate(email);
+    if (!isAllFieldsFilled) {
+      alert('Please fill in all fields');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return false;
+    }
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return false;
+    }
+    if (!isEmailValid) {
+      alert('Please enter a valid email address');
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isFormDataValidCheck()) return;
+    try {
+      const { name, email, password } = signupFormData;
+      const response = await axios.post(BACKEND_REGISTER_URL, {
+        name,
+        email,
+        password,
+      });
+      if (response.status === HttpStatusCode.Created)
+        alert('Registration successful');
+      setSignupFormData({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+      navigate('/Login');
+    } catch (error) {
+      console.log(`error`, error);
+      if (error.response?.status === HttpStatusCode.BadRequest) {
+        alert(error.response.data.message);
+      } else if (error.response?.status === HttpStatusCode.Conflict) {
+        alert('User already exists');
+      } else {
+        alert('Server error occurred, please try again later');
+      }
     }
   };
-  const websiteOptions = autoCompleteResult.map((website) => ({
-    label: website,
-    value: website,
-  }));
+
   return (
     <Form
       {...formItemLayout}
-      form={form}
       name="register"
-      onFinish={onFinish}
       initialValues={{
         residence: ['zhejiang', 'hangzhou', 'xihu'],
         prefix: '86',
@@ -133,18 +115,18 @@ const Signup = () => {
       scrollToFirstError
     >
       <Form.Item
+        name="name"
+        label="name"
+        value={signupFormData.name}
+        onChange={(e) => handleInputChange('name', e.target.value)}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
         name="email"
         label="E-mail"
-        rules={[
-          {
-            type: 'email',
-            message: 'The input is not valid E-mail!',
-          },
-          {
-            required: true,
-            message: 'Please input your E-mail!',
-          },
-        ]}
+        value={signupFormData.email}
+        onChange={(e) => handleInputChange('email', e.target.value)}
       >
         <Input />
       </Form.Item>
@@ -152,13 +134,8 @@ const Signup = () => {
       <Form.Item
         name="password"
         label="Password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!',
-          },
-        ]}
-        hasFeedback
+        value={signupFormData.password}
+        onChange={(e) => handleInputChange('password', e.target.value)}
       >
         <Input.Password />
       </Form.Item>
@@ -166,60 +143,16 @@ const Signup = () => {
       <Form.Item
         name="confirm"
         label="Confirm Password"
-        dependencies={['password']}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: 'Please confirm your password!',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('The new password that you entered do not match!'));
-            },
-          }),
-        ]}
+        value={signupFormData.confirmPassword}
+        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
       >
         <Input.Password />
       </Form.Item>
-
-      <Form.Item
-        name="Name"
-        label="Name"
-        tooltip="What do you want others to call you?"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your name!',
-            whitespace: true,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="agreement"
-        valuePropName="checked"
-        rules={[
-          {
-            validator: (_, value) =>
-              value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
-          },
-        ]}
-        {...tailFormItemLayout}
-      >
-        <Checkbox>
-          I have read the <a href="">agreement</a>
-        </Checkbox>
-      </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
           Register
         </Button>
+        <Link href="/Login">Already have an account? Log in!</Link>
       </Form.Item>
     </Form>
   );

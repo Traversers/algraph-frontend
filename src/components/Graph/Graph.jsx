@@ -1,6 +1,7 @@
 import Node from './Node';
 import Edge from './Edge';
 import List from '../Common/List';
+
 const Graph = ({ nodes, edges, handleNodeClick }) => {
   const renderNode = (node, index) => (
     <Node

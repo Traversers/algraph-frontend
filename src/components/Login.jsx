@@ -1,39 +1,54 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { BACKEND_LOGIN_URL } from '../constants/constants';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
+import { HttpStatusCode } from 'axios';
 const Login = () => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post(BACKEND_LOGIN_URL, { name, password });
+      const token = response.data;
+      localStorage.setItem('accessToken', token.accessToken);
+      localStorage.setItem('refreshToken', token.refreshToken);
+      alert('Login successful');
+      setName('');
+      setPassword('');
+      navigate('/StartPage');
+    } catch (error) {
+      console.log(`error`, error);
+      const errorStatusCode = error.response?.status;
+      if (errorStatusCode === HttpStatusCode.BadRequest) {
+        alert(error.response.data);
+      } else if (errorStatusCode === HttpStatusCode.Unauthorized) {
+        alert('user was not found or password is incorrect');
+      } else if (errorStatusCode === HttpStatusCode.InternalServerError) {
+        alert('server error occurred, please try again later');
+      }
+      alert(error.response.data);
+    }
   };
   return (
-    <Form
-      name="normal_login"
-      className="login-form"
-      initialValues={{
-        remember: true,
-      }}
-      onFinish={onFinish}
-    >
+    <Form name="normal_login" className="login-form">
       <Form.Item
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Username!',
-          },
-        ]}
+        name="name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Username"
+        />
       </Form.Item>
       <Form.Item
         name="password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Password!',
-          },
-        ]}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
       >
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
@@ -42,23 +57,18 @@ const Login = () => {
         />
       </Form.Item>
       <Form.Item>
-        <Form.Item name="remember" valuePropName="checked" noStyle>
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
-        <a className="login-form-forgot" href="">
-          Forgot password
-        </a>
-      </Form.Item>
-
-      <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button">
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          onClick={handleSubmit}
+        >
           Log in
         </Button>
         <span>
-        <RouterLink to="../Signup">
-                  {"Already have an account? Log in"}
-                </RouterLink >
+          <RouterLink to="../Signup">
+            {'Don`t have an account? Register now!'}
+          </RouterLink>
         </span>
       </Form.Item>
     </Form>

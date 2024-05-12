@@ -1,17 +1,16 @@
-import { TEXTS } from '../../constants/texts';
+import { texts } from '../../constants/constants';
 import './GraphPreview.css';
 import { Card } from 'antd';
-const { Meta } = Card;
-const GraphPreview = ({ text }) => {
+
+const GraphPreview = ({ key }) => {
   return (
     <div className="graph-preview">
       <Card
-        hoverable
-        title={text}
-        bordered={false}
-        className="card cardTitle"
-        ellipsis={{ tooltip: true }}
+        title={texts.GRAPH_PREVIEW}
+        bordered={true}
+        style={{ width: 200, height: 200, backgroundColor: 'lightpink' }}
       >
+        {' '}
         graph need to be dispalyed here
       </Card>
     </div>

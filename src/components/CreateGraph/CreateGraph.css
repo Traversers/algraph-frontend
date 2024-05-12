@@ -1,0 +1,8 @@
+.create-graph-preview {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    overflow: hidden;
+}

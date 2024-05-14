@@ -1,0 +1,25 @@
+.centered-container{
+    align-items: space-between;
+    justify-content: center;
+    align-items: space-between;
+}
+.graph-row{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 12px;
+    margin-top: 40px;
+    justify-content: center;
+}
+.graph-col{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    justify-content: space-between;
+}
+  
+  .graph-preview-grid-row {
+    margin-bottom: 16px;
+    justify-content: center;
+  }

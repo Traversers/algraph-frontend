@@ -1,10 +1,6 @@
-import GraphPreview from "./Graph/GraphPreview";
+import GraphPreviewGrid from './Graph/GraphPreviewGrid';
 
 const StartPage = () => {
-  return (
-    <div>
-     <GraphPreview  />
-    </div>
-  );
-}
+  return <GraphPreviewGrid />;
+};
 export default StartPage;

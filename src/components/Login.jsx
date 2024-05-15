@@ -13,9 +13,9 @@ const Login = () => {
     try {
       e.preventDefault();
       const response = await axios.post(BACKEND_LOGIN_URL, { name, password });
-      const token = response.data;
-      localStorage.setItem('accessToken', token.accessToken);
-      localStorage.setItem('refreshToken', token.refreshToken);
+      const tokens = response.data;
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
       alert('Login successful');
       setName('');
       setPassword('');

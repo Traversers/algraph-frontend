@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppBar from "./components/AppBar";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./components/Login/Login";
+import Signup from "./components/Signup/Signup";
 import CreateGraph from "./components/CreateGraph/CreateGraph";
 import GraphPreview from "./components/Graph/GraphPreview";
 import StartPage from "./components/StartPage";

@@ -1,21 +1,25 @@
 import React from 'react';
 
-const Node = ({ x, y, isSelected, onClick }) => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        width: '20px',
-        height: '20px',
-        borderRadius: '50%',
-        backgroundColor: isSelected ? 'red' : 'lightgreen',
-        left: `${x}px`,
-        top: `${y}px`,
-        cursor: 'pointer'
-      }}
-      onClick={onClick}
-    ></div>
-  );
+const Node = ({ node, handleNodeClick }) => {
+    const handleNodeClickInternal = () => {
+        handleNodeClick(node);
+    };
+
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                left: node.x - 5,
+                top: node.y - 5,
+                width: 15,
+                height: 15,
+                backgroundColor: node.isSelected ? 'red' : 'blue',
+                borderRadius: '50%',
+                cursor: 'pointer',
+            }}
+            onClick={handleNodeClickInternal}
+        />
+    );
 };
 
 export default Node;

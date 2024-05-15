@@ -1,33 +1,22 @@
+import React from 'react';
 import Node from './Node';
 import Edge from './Edge';
-import List from '../Common/List';
+import List from '../../common/List';
 
-const Graph = ({ nodes, edges, handleNodeClick }) => {
-  const renderNode = (node, index) => (
-    <Node
-      key={index}
-      x={node.x}
-      y={node.y}
-      isSelected={node.isSelected}
-      onClick={() => handleNodeClick(node)}
-    />
+const Graph = ({ nodes, edges, handleNodeClick, handleEdgeClick }) => {
+  const renderEdge = (edge, index) => (
+    <Edge key={index} edge={edge} handleEdgeClick={handleEdgeClick} />
   );
 
-  const renderEdge = (edge, index) => (
-    <Edge
-      key={index}
-      x1={edge.source.x}
-      y1={edge.source.y}
-      x2={edge.target.x}
-      y2={edge.target.y}
-    />
+  const renderNode = (node, index) => (
+    <Node key={index} node={node} handleNodeClick={handleNodeClick} />
   );
 
   return (
-    <>
-      <List items={nodes} renderItem={renderNode} />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <List items={edges} renderItem={renderEdge} />
-    </>
+      <List items={nodes} renderItem={renderNode} />
+    </div>
   );
 };
 

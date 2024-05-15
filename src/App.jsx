@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppBar from "./components/AppBar";
+import Navbar from "./components/Navbar/Navbar";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import CreateGraph from "./components/CreateGraph/CreateGraph";
@@ -16,6 +16,7 @@ function App() {
         <Route path="Signup" element={<Signup />} />
         <Route path="Create" element={<CreateGraph />} />
         <Route path="StartPage" element={<StartPage />} />
+        <Route path="navbar" element={<Navbar />} />
       </Routes>
     </BrowserRouter>
   );

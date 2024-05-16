@@ -1,0 +1,10 @@
+.login-wrapper {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+}
+
+.login {
+    text-align: center;
+    margin-top: 10px;
+}

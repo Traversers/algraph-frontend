@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { CREATE_GRAPH_ERRORS } from '../constants/constants';
+import GraphService from '../services/GraphService';
 
 const useGraphActions = (state) => {
     const {
@@ -127,9 +128,9 @@ const useGraphActions = (state) => {
         return edges.filter(edge => {
             const { source: edgeSource, target: edgeTarget } = edge;
             const { source: selectedEdgeSource, target: selectedEdgeTarget } = selectedEdge;
-    
+
             return !(edgeSource === selectedEdgeSource && edgeTarget === selectedEdgeTarget) &&
-                   !(edgeSource === selectedEdgeTarget && edgeTarget === selectedEdgeSource);
+                !(edgeSource === selectedEdgeTarget && edgeTarget === selectedEdgeSource);
         });
     };
 
@@ -138,7 +139,7 @@ const useGraphActions = (state) => {
             message.error(CREATE_GRAPH_ERRORS.NO_EDGE_SELECTED);
             return;
         }
-        
+
         const updatedEdges = filterSelectedEdge(edges, selectedEdge);
 
         setEdges(updatedEdges);
@@ -176,6 +177,48 @@ const useGraphActions = (state) => {
         setEdges(updatedEdges);
     };
 
+    const saveGraphToDB = async () => {
+        const edgeData = edges.map(edge => ({
+            src: edge.source.key,
+            dest: edge.target.key
+        }));
+
+        const nodeData = nodes.map(node => ({
+            id: node.key,
+            location: { x: node.x, y: node.y }
+        }));
+
+        const graphData = {
+            vertices: nodeData,
+            edges: edgeData
+        };
+        const response = await GraphService.createGraph({ graphData });
+        console.log(response);
+    };
+
+    const getGraphFromDB = async (id) => {
+        const response = await GraphService.getGraph(id);
+
+        const { vertices, edges } = response;
+        const nodes = vertices.map(vertex => ({
+            ...vertex.location,
+            key: vertex.id,
+            isSelected: false
+        }));
+        const graphEdges = edges.map(edge => {
+            const source = nodes.find(node => node.key === edge.src);
+            const target = nodes.find(node => node.key === edge.dest);
+            return { source, target, isSelected: false, key: edges.indexOf(edge) + 1 };
+        });
+        setNodes(nodes);
+        setEdges(graphEdges);
+    };
+
+    const runAlgo = async (graphId, algoName = 'BFS', src = '1') => {
+        const response = await GraphService.runAlgorithm(graphId, algoName, src);
+        console.log(response);
+    };
+
     return {
         handleStartPlacingNode,
         handleNodeClick,
@@ -185,6 +228,9 @@ const useGraphActions = (state) => {
         deleteEdge,
         clearAll,
         handleNodePlacement,
+        saveGraphToDB,
+        getGraphFromDB,
+        runAlgo,
     };
 };
 

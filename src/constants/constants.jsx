@@ -15,6 +15,8 @@ export const CREATE_GRAPH_BUTTONS_TEXTS = {
   DELETE_EDGE: "Delete Edge",
   CLEAR_ALL: "Clear All",
   CREATE_GRAPH: "Create Graph",
+  GET_GRAPH: "Get Graph",
+  RUN_ALGO: "Run Algorithm",
 };
 
 export const LOGIN_ALERTS = {

@@ -1,5 +1,7 @@
 import { GRAPH_URL } from "../constants/constants";
 import axios from "axios";
+
+
 const createGraph = async (graphData, user) => {
   try {
     const response = await axios({
@@ -64,10 +66,24 @@ const getPreviewGraph = async () => {
   }
 };
 
+const runAlgorithm = async (graphId, algoName, src) => {
+  try {
+    const response = await axios({
+      method: "post",
+      url: `${GRAPH_URL}/runAlgo`,
+      data: { graphId, algoName, src },
+    });
+    return response.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export default {
   createGraph,
   getGraph,
   setGraph,
   deleteGraph,
   getPreviewGraph,
+  runAlgorithm,
 };

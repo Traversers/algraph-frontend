@@ -1,7 +1,7 @@
 .centered-container{
     align-items: space-between;
     justify-content: center;
-    align-items: space-between;
+
 }
 .graph-row{
     display: flex;
